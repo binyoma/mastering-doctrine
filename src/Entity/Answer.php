@@ -11,6 +11,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Answer
 {
+    public const STATUS_NEEDS_APPROUVAL = 'needs_approuval';
+    public const STATUS_SPAM = 'spam';
+    public const STATUS_APPROUVED = 'approuved';
     use TimestampableEntity;
     /**
      * @ORM\Id
@@ -39,6 +42,11 @@ class Answer
      * @ORM\JoinColumn(nullable=false)
      */
     private $question;
+
+    /**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $status = self::STATUS_NEEDS_APPROUVAL;
 
     public function getId(): ?int
     {
@@ -91,5 +99,25 @@ class Answer
         $this->question = $question;
 
         return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        if (!in_array($status, [self::STATUS_NEEDS_APPROUVAL, self::STATUS_SPAM, self::STATUS_APPROUVED])) {
+            throw new \InvalidArgumentException(sprintf('Invalid status "%s"',$status));
+        }
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function isApprouved(): bool
+    {
+        return $this->status === self::STATUS_APPROUVED;
     }
 }

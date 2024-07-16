@@ -100,6 +100,13 @@ class Answer
 
         return $this;
     }
+    public function getQuestionText(): string 
+    {
+        if (!$this->getQuestion()) {
+            return '';
+        }
+        return (string) $this->getQuestion()->getQuestion();
+    }
 
     public function getStatus(): ?string
     {
